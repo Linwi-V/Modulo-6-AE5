@@ -1,0 +1,49 @@
+{% extends 'evento/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Hola, {{ user.username }}!</h2>
+
+{% if is_admin %}
+    <div class="alert alert-info">Eres administrador o puedes gestionar todos los eventos.</div>
+{% elif is_organizer %}
+    <div class="alert alert-warning">Eres organizador de eventos.</div>
+{% else %}
+    <div class="alert alert-secondary">Eres asistente.</div>
+{% endif %}
+
+<hr>
+
+<h3>Mis eventos</h3>
+{% if mis_eventos %}
+    <ul class="list-group mb-4">
+        {% for evento in mis_eventos %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_evento' evento.pk %}">{{ evento.titulo }}</a> - {{ evento.fecha|date:"d/m/Y H:i" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No has creado eventos aún.</p>
+{% endif %}
+
+<h3>Eventos a los que asistiré</h3>
+{% if eventos_asistentes %}
+    <ul class="list-group">
+        {% for evento in eventos_asistentes %}
+            <li class="list-group-item">
+                <a href="{% url 'detalle_evento' evento.pk %}">{{ evento.titulo }}</a> - {{ evento.fecha|date:"d/m/Y H:i" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No estás asistiendo a ningún evento.</p>
+{% endif %}
+
+{% if is_organizer %}
+    <a href="{% url 'crear_evento' %}" class="btn btn-success mt-4">Crear nuevo evento</a>
+{% endif %}
+
+{% endblock %}
+

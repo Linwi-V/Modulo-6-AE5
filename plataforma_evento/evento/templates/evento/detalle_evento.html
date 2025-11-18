@@ -1,0 +1,30 @@
+{% extends 'evento/base.html' %}
+
+{% block title %}{{ evento.titulo }}{% endblock %}
+
+{% block content %}
+<h2>{{ evento.titulo }}</h2>
+<p><strong>Tipo de Evento:</strong> {{ evento.get_tipo_evento_display }}</p>
+<p><strong>Fecha:</strong> {{ evento.fecha|date:"d/m/Y H:i" }}</p>
+<p><strong>Ubicación:</strong> {{ evento.ubicacion }}</p>
+<p><strong>Privado:</strong> {% if evento.es_privado %}Sí{% else %}No{% endif %}</p>
+<p><strong>Organizador:</strong> {{ evento.organizador.username }}</p>
+<p><strong>Descripción:</strong></p>
+<p>{{ evento.descripcion }}</p>
+
+{% if evento.asistentes.exists %}
+    <p><strong>Asistentes:</strong></p>
+    <ul>
+        {% for asistente in evento.asistentes.all %}
+            <li>{{ asistente.username }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<a href="{% url 'lista_eventos' %}" class="btn btn-secondary mt-3">Volver a eventos</a>
+
+{% if user == evento.organizador or user.is_superuser %}
+    <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-primary mt-3">Editar</a>
+    <a href="{% url 'eliminar_evento' evento.pk %}" class="btn btn-danger mt-3">Eliminar</a>
+{% endif %}
+{% endblock %}
